@@ -139,11 +139,21 @@ public class AccountTest {
       .state("outstanding")
       .build());
 
+    User user = User.builder()
+      .active(true)
+      .type("patron")
+      .patronGroup(UUID.randomUUID().toString())
+      .lastName("Doe")
+      .firstName("Jane")
+      .email("jane.doe@test.com")
+      .build();
+
     account = Account.builder()
       .charges(charges)
       .holds(holds)
       .loans(loans)
       .id(UUID.randomUUID().toString())
+      .user(user)
       .build();
 
     SchemaFactory schemaFactory = SchemaFactory

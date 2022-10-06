@@ -53,6 +53,11 @@
         "type": "object",
         "$ref": "loan.json"
       }
+    },
+    "user": {
+      "type": "object",
+      "description": "The patron's personal data",
+      "$ref": "user.json"
     }
   },
   "required": [
@@ -62,6 +67,7 @@
     "totalHolds",
     "charges",
     "holds",
-    "loans"
+    "loans",
+    "user"
   ]
 }

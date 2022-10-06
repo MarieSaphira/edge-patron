@@ -29,7 +29,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
     "totalHolds",
     "charges",
     "holds",
-    "loans"
+    "loans",
+    "user"
 })
 public final class Account {
   @JsonProperty("id")
@@ -62,8 +63,12 @@ public final class Account {
   @JacksonXmlElementWrapper(localName = "loans")
   public final List<Loan> loans;
 
+  @JsonProperty("user")
+  public final User user;
+
   // (internal) copy constructor to help with conditionally marshaled fields
   private Account(Account other, boolean includeCharges, boolean includeHolds, boolean includeLoans) {
+    // TODO maybe add boolean includeUser?
     this.id = other.id;
 
     this.totalCharges = other.totalCharges;
@@ -75,9 +80,11 @@ public final class Account {
     this.totalChargesCount = other.totalChargesCount;
     this.totalLoans = other.totalLoans;
     this.totalHolds = other.totalHolds;
+
+    this.user = other.user;
   }
 
-  private Account(String id, List<Charge> charges, List<Hold> holds, List<Loan> loans) {
+  private Account(String id, List<Charge> charges, List<Hold> holds, List<Loan> loans, User user) {
     this.id = id;
 
     Money tc = null;
@@ -109,6 +116,7 @@ public final class Account {
     this.charges = charges;
     this.holds = holds;
     this.loans = loans;
+    this.user = user;
   }
 
   public static Builder builder() {
@@ -121,6 +129,7 @@ public final class Account {
     private List<Charge> charges;
     private List<Hold> holds;
     private List<Loan> loans;
+    private User user;
 
     @JsonProperty("id")
     public Builder id(String id) {
@@ -146,8 +155,14 @@ public final class Account {
       return this;
     }
 
+    @JsonProperty("user")
+    public Builder user(User user) {
+      this.user = user;
+      return this;
+    }
+
     public Account build() {
-      return new Account(id, charges, holds, loans);
+      return new Account(id, charges, holds, loans, user);
     }
   }
 
@@ -163,6 +178,7 @@ public final class Account {
     result = prime * result + totalChargesCount;
     result = prime * result + totalLoans;
     result = prime * result + totalHolds;
+    result = prime * result + ((user == null) ? 0 : user.hashCode());
     return result;
   }
 
@@ -178,7 +194,8 @@ public final class Account {
       Objects.equals(totalCharges, account.totalCharges) &&
       Objects.equals(charges, account.charges) &&
       Objects.equals(holds, account.holds) &&
-      Objects.equals(loans, account.loans);
+      Objects.equals(loans, account.loans) &&
+      Objects.equals(user, account.user);
   }
 
   public String toXml(boolean includeLoans, boolean includeCharges, boolean includeHolds)
